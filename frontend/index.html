@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataExtract Pro - AI-Powered Business Data Extraction</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="brand-icon">📊</span>
+                <span class="brand-name">DataExtract Pro</span>
+            </div>
+            <div class="nav-links">
+                <a href="#scraper" class="nav-link active">Scraper</a>
+                <a href="#data" class="nav-link">Status</a>
+                <a href="#insights" class="nav-link">Insights</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">AI-Powered Business Data Extraction</h1>
+                <p class="hero-subtitle">Extract, classify, and analyze Google Maps business data with advanced machine learning</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <main>
+            <!-- Configuration Panel -->
+            <section class="config-panel card">
+                <div class="card-header">
+                    <h2>⚙️ Configuration</h2>
+                    <span class="card-badge">Setup</span>
+                </div>
+                <div class="card-body">
+                
+                <!-- City Input -->
+                <div class="form-group">
+                    <label for="city-input">City Name *</label>
+                    <input type="text" id="city-input" placeholder="e.g., Mumbai, Delhi, Bangalore" required>
+                </div>
+
+                <!-- Field Selection -->
+                <div class="form-group">
+                    <label>Fields to Scrape</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="field-name" value="name" checked>
+                            <span>Name</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="field-address" value="address" checked>
+                            <span>Address</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="field-phone" value="phone" checked>
+                            <span>Phone Number</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="field-category" value="category" checked>
+                            <span>Category</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Category Selection -->
+                <div class="form-group">
+                    <div class="form-header">
+                        <label>Business Categories</label>
+                        <button type="button" id="select-all-btn" class="btn-link">Select All</button>
+                    </div>
+                    <div class="categories-container">
+                        <div id="categories-list" class="categories-grid"></div>
+                    </div>
+                    <p class="help-text" id="categories-count">0 categories selected</p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="form-actions">
+                    <button id="start-btn" class="btn-primary">
+                        <span class="btn-icon">▶</span>
+                        Start Scraping
+                    </button>
+                    <button id="stop-btn" class="btn-danger" style="display: none;">
+                        <span class="btn-icon">⏹</span>
+                        Stop
+                    </button>
+                    <button id="clear-btn" class="btn-secondary">
+                        <span class="btn-icon">🗑</span>
+                        Clear Logs
+                    </button>
+                </div>
+                </div>
+            </section>
+
+            <!-- Logs Panel (swapped with status) -->
+            <section class="status-panel card">
+                <div class="card-header">
+                    <h2>📋 Activity Logs</h2>
+                    <button id="clear-logs-btn" class="btn-link">Clear</button>
+                </div>
+                <div class="card-body">
+                    <div id="logs-container" class="logs-container">
+                        <p class="no-logs">No activity yet. Configure and start scraping to see logs.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Status Panel (swapped with logs) -->
+            <section class="logs-panel card">
+                <div class="card-header">
+                    <h2>📊 Status Dashboard</h2>
+                </div>
+                <div class="card-body">
+                    <div class="status-info">
+                        <div class="status-item">
+                            <span class="status-label">Status:</span>
+                            <span id="status-text" class="status-value">Ready</span>
+                            <span id="status-dot" class="status-dot idle"></span>
+                        </div>
+                        <div class="status-item" id="progress-item" style="display: none;">
+                            <span class="status-label">Progress:</span>
+                            <div class="progress-bar">
+                                <div id="progress-fill" class="progress-fill"></div>
+                            </div>
+                            <span id="progress-text" class="progress-text">0/0</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Insights Section - Analytics Dashboard -->
+        <section id="insights-section" class="insights-section">
+            <div class="dashboard-container">
+                <!-- Dashboard Header -->
+                <div class="dashboard-header">
+                    <h2 class="dashboard-title">📈 Analytics Dashboard</h2>
+                    <div class="dashboard-actions">
+                        <button id="theme-toggle" class="theme-toggle" title="Toggle theme">
+                            <span class="theme-icon">🌓</span>
+                            <span class="theme-text">Theme</span>
+                        </button>
+                        <button id="refresh-insights-btn" class="btn-refresh">Refresh</button>
+                    </div>
+                </div>
+
+                <!-- Dashboard Content -->
+                <div class="dashboard-content">
+                    <div id="insights-loading" class="insights-loading" style="display: none;">
+                        <p>Loading insights...</p>
+                    </div>
+                    <div id="insights-content" class="insights-content">
+                        <!-- Metrics Cards Grid -->
+                        <div class="dashboard-grid">
+                            <div class="card blue">
+                                <div class="card-header-accent"></div>
+                                <div class="card-body">
+                                    <div class="card-icon">📊</div>
+                                    <div class="card-content">
+                                        <div class="card-value" id="total-records">0</div>
+                                        <div class="card-label">Total Records</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card green">
+                                <div class="card-header-accent"></div>
+                                <div class="card-body">
+                                    <div class="card-icon">🏷️</div>
+                                    <div class="card-content">
+                                        <div class="card-value" id="total-categories">0</div>
+                                        <div class="card-label">Categories</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card yellow">
+                                <div class="card-header-accent"></div>
+                                <div class="card-body">
+                                    <div class="card-icon">📞</div>
+                                    <div class="card-content">
+                                        <div class="card-value" id="records-with-phone">0</div>
+                                        <div class="card-label">With Phone</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card pink">
+                                <div class="card-header-accent"></div>
+                                <div class="card-body">
+                                    <div class="card-icon">📍</div>
+                                    <div class="card-content">
+                                        <div class="card-value" id="records-with-address">0</div>
+                                        <div class="card-label">With Address</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Charts Grid -->
+                        <div class="dashboard-grid charts-grid">
+                            <div class="card chart-card">
+                                <div class="card-header-accent blue"></div>
+                                <div class="card-body">
+                                    <h3 class="chart-title">Records by Category</h3>
+                                    <canvas id="categoryChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="card chart-card">
+                                <div class="card-header-accent green"></div>
+                                <div class="card-body">
+                                    <h3 class="chart-title">Entries by Percentage</h3>
+                                    <canvas id="pieChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="insights-empty" class="insights-empty">
+                        <p>No data available. Start scraping to see insights.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>&copy; 2024 DataExtract Pro. Powered by AI & Machine Learning.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

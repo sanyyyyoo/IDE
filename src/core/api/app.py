@@ -57,6 +57,16 @@ def _get_project_root() -> str:
 
 def _models_dir() -> str:
     """Get the models directory path."""
+    env_model_path = os.getenv("MODEL_PATH")
+    if env_model_path:
+        env_model_path = os.path.abspath(env_model_path)
+        if os.path.isdir(env_model_path):
+            return env_model_path
+        raise FileNotFoundError(
+            f"Environment variable MODEL_PATH is set but the directory was not found: {env_model_path}\n"
+            "Please ensure the model folder exists or unset MODEL_PATH."
+        )
+
     project_root = _get_project_root()
     model_path = os.path.join(project_root, "models", "distilbert_finetuned")
     

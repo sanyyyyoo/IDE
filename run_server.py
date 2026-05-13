@@ -4,16 +4,46 @@ Run the Flask server for the Maps Scraper API.
 """
 
 import os
+from pathlib import Path
+
 from src.core.api.app import app
 
-# ✅ Define the absolute model path once
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, "models", "distilbert_finetuned")
+BASE_DIR = Path(__file__).resolve().parent
+DEFAULT_MODEL_DIR = BASE_DIR / "models" / "distilbert_finetuned"
+DEFAULT_DRIVE_URL = "https://drive.google.com/drive/folders/1DlBeK5INJGk12s5821FIIZeVVeAEsYxL?usp=drive_link"
 
-# Normalize Windows slashes → forward slashes
-MODEL_PATH = MODEL_PATH.replace("\\", "/")
+MODEL_PATH = Path(os.getenv("MODEL_PATH", str(DEFAULT_MODEL_DIR))).resolve()
 
-# Print model path info on startup
+
+def download_model(model_dir: Path, download_url: str) -> None:
+    if model_dir.exists():
+        return
+
+    print(f"Downloading model from Google Drive to {model_dir}...")
+
+    try:
+        gdown = __import__("gdown")
+    except ImportError as exc:
+        raise ImportError(
+            "The Python package 'gdown' is required to download the model from Google Drive. "
+            "Install it with 'pip install gdown' or set MODEL_PATH to a local model folder."
+        ) from exc
+
+    model_dir.parent.mkdir(parents=True, exist_ok=True)
+    gdown.download_folder(download_url, output=str(model_dir), quiet=False)
+
+    if not model_dir.exists():
+        raise FileNotFoundError(f"Model download failed: {model_dir} does not exist after download.")
+
+
+# Ensure the model is available before starting the Flask app.
+download_url = os.getenv("MODEL_DOWNLOAD_URL", DEFAULT_DRIVE_URL)
+download_model(MODEL_PATH, download_url)
+
+MODEL_PATH_STR = MODEL_PATH.as_posix()
+os.environ["MODEL_PATH"] = MODEL_PATH_STR
+app.config["MODEL_PATH"] = MODEL_PATH_STR
+
 print("Starting Flask server on http://localhost:8000")
 print("API endpoints:")
 print("  POST   /scrape          - Start scraping job")
@@ -21,12 +51,6 @@ print("  GET    /status/<job_id> - Get job status")
 print("  GET    /data            - List processed files")
 print("  GET    /export/<file>   - Download file")
 print("  GET    /health          - Health check")
-import os
-os.environ["MODEL_PATH"] = "C:/Users/PMCC/Desktop/IDE/models/distilbert_finetuned"
-print("  [MODEL] Path configured:", os.environ["MODEL_PATH"])
-
-
-# Make model path accessible to the app
-app.config["MODEL_PATH"] = MODEL_PATH
+print("  [MODEL] Path configured:", MODEL_PATH_STR)
 
 app.run(debug=True, host="0.0.0.0", port=8000)

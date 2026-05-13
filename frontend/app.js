@@ -1,5 +1,7 @@
 // Configuration
-const API_BASE = 'http://localhost:8000';
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8000'
+    : 'https://ide-k1r8.onrender.com';
 const CATEGORIES = [
     "General store", "Grocery store", "Chemist shop", "Medical store", "Electronics Store",
     "Furniture shop", "Sofa Shop", "Curtains Shop", "Clothing Shop", "Garments Shop",

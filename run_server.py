@@ -30,7 +30,14 @@ def download_model(model_dir: Path, download_url: str) -> None:
         ) from exc
 
     model_dir.parent.mkdir(parents=True, exist_ok=True)
-    gdown.download_folder(download_url, output=str(model_dir), quiet=False)
+    try:
+        gdown.download_folder(download_url, output=str(model_dir), quiet=False)
+    except Exception as exc:
+        raise RuntimeError(
+            "Failed to download the model from Google Drive. "
+            "Ensure the folder is shared as 'Anyone with the link' or set MODEL_PATH to a local model directory. "
+            "If you are using a private Drive link, set MODEL_DOWNLOAD_URL to a publicly accessible download URL instead."
+        ) from exc
 
     if not model_dir.exists():
         raise FileNotFoundError(f"Model download failed: {model_dir} does not exist after download.")
@@ -44,7 +51,11 @@ MODEL_PATH_STR = MODEL_PATH.as_posix()
 os.environ["MODEL_PATH"] = MODEL_PATH_STR
 app.config["MODEL_PATH"] = MODEL_PATH_STR
 
-print("Starting Flask server on http://localhost:8000")
+PORT = int(os.getenv("PORT", "8000"))
+HOST = os.getenv("HOST", "0.0.0.0")
+DEBUG = os.getenv("FLASK_DEBUG", "false").lower() in ("1", "true", "yes")
+
+print(f"Starting Flask server on http://{HOST}:{PORT}")
 print("API endpoints:")
 print("  POST   /scrape          - Start scraping job")
 print("  GET    /status/<job_id> - Get job status")
@@ -53,4 +64,4 @@ print("  GET    /export/<file>   - Download file")
 print("  GET    /health          - Health check")
 print("  [MODEL] Path configured:", MODEL_PATH_STR)
 
-app.run(debug=True, host="0.0.0.0", port=8000)
+app.run(debug=DEBUG, host=HOST, port=PORT)

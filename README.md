@@ -1,5 +1,7 @@
 🧭 Overview
 DataExtract Pro is a production-style full-stack system that automates the extraction, cleaning, and classification of unstructured web data using a fine-tuned DistilBERT NLP model.
+<img width="1600" height="776" alt="image" src="https://github.com/user-attachments/assets/f74c0e92-3d01-44ee-aff4-e06570b6d089" />
+
 It combines:
 🔍 Web scraping automation
 🧠 Transformer-based NLP classification
@@ -44,10 +46,10 @@ Export-ready structured datasets
 
 📊 Data Intelligence
 
-
 Cleaned and normalized structured datasets
 Export to CSV / XLSX
 Dashboard insights and visualization support
+<img width="1600" height="835" alt="image" src="https://github.com/user-attachments/assets/423fbf7d-e14e-4835-98cd-8a81df3bc31a" />
 
 ⚡ Automation Workflow
 <img width="384" height="304" alt="image" src="https://github.com/user-attachments/assets/df1842b6-eac7-440e-beec-8dcd46dd7877" />
